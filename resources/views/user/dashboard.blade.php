@@ -13,6 +13,7 @@
         </h2>
       </div>
     </div>
+    <hr>
     <div class="row my-5">
       @include('components.alert')
       <table class="table">
@@ -34,12 +35,17 @@
               <strong>${{ $checkout->Camp->price }}k </strong>
             </td>
             <td>
-              @if ($checkout->is_paid)
-              <strong class="text-success">Payment Success</strong>
-              @else
-              <strong class="text-danger">Waiting for Payment</strong>
-              @endif
+              <strong>{{ $checkout->payment_status }} </strong>
             </td>
+            @if ($checkout->payment_status == "waiting")
+            <td>
+              <a href="{{ $checkout->midtrans_url }}" target="_blank" class="btn btn-warning">
+                Pay Here!
+              </a>
+            </td>
+            @endif
+
+
             <td>
               <a href="https://wa.me/08979134310?text=hi, saya ingin bertanya tentang kelas {{ $checkout->Camp->title }} "
                 class="btn btn-primary">

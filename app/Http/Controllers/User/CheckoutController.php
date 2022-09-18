@@ -58,7 +58,6 @@ class CheckoutController extends Controller
   {
 
     //mapping data
-    return $request;
     $data = $request->all();
     $data['user_id'] = Auth::id();
     $data['camp_id'] = $camp->id;
@@ -68,6 +67,8 @@ class CheckoutController extends Controller
     $user->email = $data['email'];
     $user->name = $data['name'];
     $user->occupation = $data['occupation'];
+    $user->phone = $data['phone'];
+    $user->address = $data['address'];
     $user->save();
 
     //creta table checkout
@@ -136,7 +137,7 @@ class CheckoutController extends Controller
 
   public function getSnapRedirect(Checkout $checkout)
   {
-    $order_id = $checkout->id . '-' . random_int(0001, 9999) . '-LRC';
+    $order_id = 'LRC-' . random_int(1000, 9999) . '-' . $checkout->id;
     $price = $checkout->Camp->price * 1000;
     $checkout->midtrans_booking_code = $order_id;
 
@@ -180,11 +181,11 @@ class CheckoutController extends Controller
     try {
       // get snappayment page
 
-      $payment_url = Midtrans\Snap::createTransaction($midtrans_params)->redirect_url();
-      $checkout->midtrans_url = $payment_url;
+      $paymentUrl = Midtrans\Snap::createTransaction($midtrans_params)->redirect_url;
+      $checkout->midtrans_url = $paymentUrl;
       $checkout->save();
 
-      return $payment_url;
+      return $paymentUrl;
     } catch (Exception $e) {
       return false;
     }
@@ -192,12 +193,14 @@ class CheckoutController extends Controller
 
   public function midtransCallback(Request $request)
   {
-    $notif = new Midtrans\Notification();
+    $notif = $request->method() == 'POST' ? new Midtrans\Notification() : Midtrans\Transaction::status($request->order_id);
 
     $transaction_status = $notif->transaction_status;
     $fraud = $notif->fraud_status;
-
-    $checkout_id = explode('-', $notif->order_id[0]);
+    $checkout_id_explode = explode("-", $notif->order_id);
+    foreach ($checkout_id_explode as $key => $value) {
+      $checkout_id = $value;
+    }
     $checkout = Checkout::find($checkout_id);
 
     if ($transaction_status == 'capture') {
