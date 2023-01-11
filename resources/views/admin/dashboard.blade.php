@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="contrainer my-5">
+<div class="contrainer my-3">
   <div class="row">
     <div class="col-8 offset-2">
       <div class="card">
