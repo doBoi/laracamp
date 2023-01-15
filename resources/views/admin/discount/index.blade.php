@@ -17,6 +17,7 @@
                 <th>Code</th>
                 <th>Percentage</th>
                 <th>Description</th>
+                <th colspan="2" class="text-center">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -38,9 +39,19 @@
                   <strong> -- </strong>
                   @endif
                 </td>
+                <td>
+                  <a href="{{ route('admin.discount.edit', $discount->id) }}" class="btn btn-warning">Update</a>
+                </td>
+                <td>
+                  <form action="{{ route('admin.discount.destroy', $discount->id) }}" method="post">
+                    @csrf
+                    @method('DELETE')
+                    <button class="btn btn-danger">Delete</button>
+                  </form>
+                </td>
                 @empty
                 <div class="d-flex justify-content-center ">
-                  <h1>No Data</h1>
+                  <td colspan="6">No Data</td>
                 </div>
                 @endforelse
             </tbody>
