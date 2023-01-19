@@ -25,7 +25,13 @@
               <tr>
                 <td>{{ $checkout->User->name }}</td>
                 <td>{{ $checkout->Camp->title }}</td>
-                <td>{{ $checkout->Camp->price }}</td>
+                <td>
+                  <strong>Rp. {{ number_format($checkout->total,2) }}
+                    @if ($checkout->discount_id)
+                    <div class="badge bg-success">Disc {{ $checkout->discount_percentage }}%</div>
+                    @endif
+                  </strong>
+                </td>
                 <td>{{ $checkout->created_at->format('M d Y') }}</td>
                 <td> <strong class="text-capitalize"> {{ $checkout->payment_status }} </strong></td>
                 {{-- <td>
